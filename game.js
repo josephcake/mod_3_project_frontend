@@ -35,11 +35,11 @@
 		this.loadImages();
 	}
 	window['Runner'] = Runner;
-	var DEFAULT_WIDTH = 600;
-	var FPS = 60;
-	var IS_HIDPI = window.devicePixelRatio > 1;
-	var IS_MOBILE = window.navigator.userAgent.indexOf('Mobi') > -1;
-	var IS_TOUCH_ENABLED = 'ontouchstart' in window;
+	let DEFAULT_WIDTH = 600;
+	let FPS = 60;
+	let IS_HIDPI = window.devicePixelRatio > 1;
+	let IS_MOBILE = window.navigator.userAgent.indexOf('Mobi') > -1;
+	let IS_TOUCH_ENABLED = 'ontouchstart' in window;
 	Runner.config = {
 		ACCELERATION: 0.001,
 		BG_CLOUD_SPEED: 0.2,
@@ -168,26 +168,26 @@
 			}
 		},
 		loadImages: function() {
-			var imageSources = IS_HIDPI ? Runner.imageSources.HDPI : Runner.imageSources.LDPI;
-			var numImages = imageSources.length;
-			for (var i = numImages - 1; i >= 0; i--) {
-				var imgSource = imageSources[i];
+			let imageSources = IS_HIDPI ? Runner.imageSources.HDPI : Runner.imageSources.LDPI;
+			let numImages = imageSources.length;
+			for (let i = numImages - 1; i >= 0; i--) {
+				let imgSource = imageSources[i];
 				this.images[imgSource.name] = document.getElementById(imgSource.id);
 			}
 			this.init();
 		},
 		loadSounds: function() {
 			this.audioContext = new AudioContext();
-			var resourceTemplate = document.getElementById(this.config.RESOURCE_TEMPLATE_ID).content;
-			for (var sound in Runner.sounds) {
-				var soundSrc = document.getElementById(Runner.sounds[sound]);
+			let resourceTemplate = document.getElementById(this.config.RESOURCE_TEMPLATE_ID).content;
+			for (let sound in Runner.sounds) {
+				let soundSrc = document.getElementById(Runner.sounds[sound]);
 				this.soundFx[sound] = soundSrc;
 			}
 		},
 		setSpeed: function(opt_speed) {
-			var speed = opt_speed || this.currentSpeed;
+			let speed = opt_speed || this.currentSpeed;
 			if (this.dimensions.WIDTH < DEFAULT_WIDTH) {
-				var mobileSpeed = speed * this.dimensions.WIDTH / DEFAULT_WIDTH * this.config.MOBILE_SPEED_COEFFICIENT;
+				let mobileSpeed = speed * this.dimensions.WIDTH / DEFAULT_WIDTH * this.config.MOBILE_SPEED_COEFFICIENT;
 				this.currentSpeed = mobileSpeed > speed ? speed : mobileSpeed;
 			} else if (opt_speed) {
 				this.currentSpeed = opt_speed;
@@ -227,8 +227,8 @@
 		adjustDimensions: function() {
 			clearInterval(this.resizeTimerId_);
 			this.resizeTimerId_ = null;
-			var boxStyles = window.getComputedStyle(this.outerContainerEl);
-			var padding = Number(boxStyles.paddingLeft.substr(0, boxStyles.paddingLeft.length - 2));
+			let boxStyles = window.getComputedStyle(this.outerContainerEl);
+			let padding = Number(boxStyles.paddingLeft.substr(0, boxStyles.paddingLeft.length - 2));
 			this.dimensions.WIDTH = (this.outerContainerEl.offsetWidth - padding * 2) > DEFAULT_WIDTH ? DEFAULT_WIDTH : this.outerContainerEl.offsetWidth - padding * 2;
 			if (this.canvas) {
 				this.canvas.width = this.dimensions.WIDTH;
@@ -256,7 +256,7 @@
 			if (!this.started && !this.crashed) {
 				this.playingIntro = true;
 				this.tRex.playingIntro = true;
-				var keyframes = '@-webkit-keyframes intro { ' + 'from { width:' + Trex.config.WIDTH + 'px }' + 'to { width: ' + this.dimensions.WIDTH + 'px }' + '}';
+				let keyframes = '@-webkit-keyframes intro { ' + 'from { width:' + Trex.config.WIDTH + 'px }' + 'to { width: ' + this.dimensions.WIDTH + 'px }' + '}';
 				document.styleSheets[0].insertRule(keyframes, 0);
 				this.containerEl.addEventListener(Runner.events.ANIM_END, this.startGame.bind(this));
 				this.containerEl.style.webkitAnimation = 'intro .4s ease-out 1 both';
@@ -285,8 +285,8 @@
 		},
 		update: function() {
 			this.drawPending = false;
-			var now = performance.now();
-			var deltaTime = now - (this.time || now);
+			let now = performance.now();
+			let deltaTime = now - (this.time || now);
 			this.time = now;
 			if (this.activated) {
 				this.clearCanvas();
@@ -294,7 +294,7 @@
 					this.tRex.updateJump(deltaTime, this.config);
 				}
 				this.runningTime += deltaTime;
-				var hasObstacles = this.runningTime > this.config.CLEAR_TIME;
+				let hasObstacles = this.runningTime > this.config.CLEAR_TIME;
 				if (this.tRex.jumpCount == 1 && !this.playingIntro) {
 					this.playIntro();
 				}
@@ -304,7 +304,7 @@
 					deltaTime = !this.started ? 0 : deltaTime;
 					this.horizon.update(deltaTime, this.currentSpeed, hasObstacles);
 				}
-				var collision = hasObstacles && checkForCollision(this.horizon.obstacles[0], this.tRex);
+				let collision = hasObstacles && checkForCollision(this.horizon.obstacles[0], this.tRex);
 				if (!collision) {
 					this.distanceRan += this.currentSpeed * deltaTime / this.msPerFrame;
 					if (this.currentSpeed < this.config.MAX_SPEED) {
@@ -316,7 +316,7 @@
 				if (this.distanceMeter.getActualDistance(this.distanceRan) > this.distanceMeter.maxScore) {
 					this.distanceRan = 0;
 				}
-				var playAcheivementSound = this.distanceMeter.update(deltaTime, Math.ceil(this.distanceRan));
+				let playAcheivementSound = this.distanceMeter.update(deltaTime, Math.ceil(this.distanceRan));
 				if (playAcheivementSound) {
 					this.playSound(this.soundFx.SCORE);
 				}
@@ -386,14 +386,14 @@
 			}
 		},
 		onKeyUp: function(e) {
-			var keyCode = String(e.keyCode);
-			var isjumpKey = Runner.keycodes.JUMP[keyCode] || e.type == Runner.events.TOUCHEND || e.type == Runner.events.MOUSEDOWN;
+			let keyCode = String(e.keyCode);
+			let isjumpKey = Runner.keycodes.JUMP[keyCode] || e.type == Runner.events.TOUCHEND || e.type == Runner.events.MOUSEDOWN;
 			if (this.isRunning() && isjumpKey) {
 				this.tRex.endJump();
 			} else if (Runner.keycodes.DUCK[keyCode]) {
 				this.tRex.speedDrop = false;
 			} else if (this.crashed) {
-				var deltaTime = performance.now() - this.time;
+				let deltaTime = performance.now() - this.time;
 				if (Runner.keycodes.RESTART[keyCode] || (e.type == Runner.events.MOUSEUP && e.target == this.canvas) || (deltaTime >= this.config.GAMEOVER_CLEAR_TIME && Runner.keycodes.JUMP[keyCode])) {
 					this.restart();
 				}
@@ -475,13 +475,13 @@
 		}
 	};
 	Runner.updateCanvasScaling = function(canvas, opt_width, opt_height) {
-		var context = canvas.getContext('2d');
-		var devicePixelRatio = Math.floor(window.devicePixelRatio) || 1;
-		var backingStoreRatio = Math.floor(context.webkitBackingStorePixelRatio) || 1;
-		var ratio = devicePixelRatio / backingStoreRatio;
+		let context = canvas.getContext('2d');
+		let devicePixelRatio = Math.floor(window.devicePixelRatio) || 1;
+		let backingStoreRatio = Math.floor(context.webkitBackingStorePixelRatio) || 1;
+		let ratio = devicePixelRatio / backingStoreRatio;
 		if (devicePixelRatio !== backingStoreRatio) {
-			var oldWidth = opt_width || canvas.width;
-			var oldHeight = opt_height || canvas.height;
+			let oldWidth = opt_width || canvas.width;
+			let oldHeight = opt_height || canvas.height;
 			canvas.width = oldWidth * ratio;
 			canvas.height = oldHeight * ratio;
 			canvas.style.width = oldWidth + 'px';
@@ -503,7 +503,7 @@
 	}
 
 	function createCanvas(container, width, height, opt_classname) {
-		var canvas = document.createElement('canvas');
+		let canvas = document.createElement('canvas');
 		canvas.className = opt_classname ? Runner.classes.CANVAS + ' ' + opt_classname : Runner.classes.CANVAS;
 		canvas.width = width;
 		canvas.height = height;
@@ -511,16 +511,6 @@
 		return canvas;
 	}
 
-	function decodeBase64ToArrayBuffer(base64String) {
-		var len = (base64String.length / 4) * 3;
-		var str = atob(base64String);
-		var arrayBuffer = new ArrayBuffer(len);
-		var bytes = new Uint8Array(arrayBuffer);
-		for (var i = 0; i < len; i++) {
-			bytes[i] = str.charCodeAt(i);
-		}
-		return bytes.buffer;
-	}
 
 	function GameOverPanel(canvas, textSprite, restartImg, dimensions) {
 		this.canvas = canvas;
@@ -546,20 +536,20 @@
 			}
 		},
 		draw: function() {
-			var dimensions = GameOverPanel.dimensions;
-			var centerX = this.canvasDimensions.WIDTH / 2;
-			var textSourceX = dimensions.TEXT_X;
-			var textSourceY = dimensions.TEXT_Y;
-			var textSourceWidth = dimensions.TEXT_WIDTH;
-			var textSourceHeight = dimensions.TEXT_HEIGHT;
-			var textTargetX = Math.round(centerX - (dimensions.TEXT_WIDTH / 2));
-			var textTargetY = Math.round((this.canvasDimensions.HEIGHT - 25) / 3);
-			var textTargetWidth = dimensions.TEXT_WIDTH;
-			var textTargetHeight = dimensions.TEXT_HEIGHT;
-			var restartSourceWidth = dimensions.RESTART_WIDTH;
-			var restartSourceHeight = dimensions.RESTART_HEIGHT;
-			var restartTargetX = centerX - (dimensions.RESTART_WIDTH / 2);
-			var restartTargetY = this.canvasDimensions.HEIGHT / 2;
+			let dimensions = GameOverPanel.dimensions;
+			let centerX = this.canvasDimensions.WIDTH / 2;
+			let textSourceX = dimensions.TEXT_X;
+			let textSourceY = dimensions.TEXT_Y;
+			let textSourceWidth = dimensions.TEXT_WIDTH;
+			let textSourceHeight = dimensions.TEXT_HEIGHT;
+			let textTargetX = Math.round(centerX - (dimensions.TEXT_WIDTH / 2));
+			let textTargetY = Math.round((this.canvasDimensions.HEIGHT - 25) / 3);
+			let textTargetWidth = dimensions.TEXT_WIDTH;
+			let textTargetHeight = dimensions.TEXT_HEIGHT;
+			let restartSourceWidth = dimensions.RESTART_WIDTH;
+			let restartSourceHeight = dimensions.RESTART_HEIGHT;
+			let restartTargetX = centerX - (dimensions.RESTART_WIDTH / 2);
+			let restartTargetY = this.canvasDimensions.HEIGHT / 2;
 			if (IS_HIDPI) {
 				textSourceY *= 2;
 				textSourceX *= 2;
@@ -574,20 +564,20 @@
 	};
 
 	function checkForCollision(obstacle, tRex, opt_canvasCtx) {
-		var obstacleBoxXPos = Runner.defaultDimensions.WIDTH + obstacle.xPos;
-		var tRexBox = new CollisionBox(tRex.xPos + 1, tRex.yPos + 1, tRex.config.WIDTH - 2, tRex.config.HEIGHT - 2);
-		var obstacleBox = new CollisionBox(obstacle.xPos + 1, obstacle.yPos + 1, obstacle.typeConfig.width * obstacle.size - 2, obstacle.typeConfig.height - 2);
+		let obstacleBoxXPos = Runner.defaultDimensions.WIDTH + obstacle.xPos;
+		let tRexBox = new CollisionBox(tRex.xPos + 1, tRex.yPos + 1, tRex.config.WIDTH - 2, tRex.config.HEIGHT - 2);
+		let obstacleBox = new CollisionBox(obstacle.xPos + 1, obstacle.yPos + 1, obstacle.typeConfig.width * obstacle.size - 2, obstacle.typeConfig.height - 2);
 		if (opt_canvasCtx) {
 			drawCollisionBoxes(opt_canvasCtx, tRexBox, obstacleBox);
 		}
 		if (boxCompare(tRexBox, obstacleBox)) {
-			var collisionBoxes = obstacle.collisionBoxes;
-			var tRexCollisionBoxes = Trex.collisionBoxes;
-			for (var t = 0; t < tRexCollisionBoxes.length; t++) {
-				for (var i = 0; i < collisionBoxes.length; i++) {
-					var adjTrexBox = createAdjustedCollisionBox(tRexCollisionBoxes[t], tRexBox);
-					var adjObstacleBox = createAdjustedCollisionBox(collisionBoxes[i], obstacleBox);
-					var crashed = boxCompare(adjTrexBox, adjObstacleBox);
+			let collisionBoxes = obstacle.collisionBoxes;
+			let tRexCollisionBoxes = Trex.collisionBoxes;
+			for (let t = 0; t < tRexCollisionBoxes.length; t++) {
+				for (let i = 0; i < collisionBoxes.length; i++) {
+					let adjTrexBox = createAdjustedCollisionBox(tRexCollisionBoxes[t], tRexBox);
+					let adjObstacleBox = createAdjustedCollisionBox(collisionBoxes[i], obstacleBox);
+					let crashed = boxCompare(adjTrexBox, adjObstacleBox);
 					if (opt_canvasCtx) {
 						drawCollisionBoxes(opt_canvasCtx, adjTrexBox, adjObstacleBox);
 					}
@@ -614,11 +604,11 @@
 	};
 
 	function boxCompare(tRexBox, obstacleBox) {
-		var crashed = false;
-		var tRexBoxX = tRexBox.x;
-		var tRexBoxY = tRexBox.y;
-		var obstacleBoxX = obstacleBox.x;
-		var obstacleBoxY = obstacleBox.y;
+		let crashed = false;
+		let tRexBoxX = tRexBox.x;
+		let tRexBoxY = tRexBox.y;
+		let obstacleBoxX = obstacleBox.x;
+		let obstacleBoxY = obstacleBox.y;
 		if (tRexBox.x < obstacleBoxX + obstacleBox.width && tRexBox.x + tRexBox.width > obstacleBoxX && tRexBox.y < obstacleBox.y + obstacleBox.height && tRexBox.height + tRexBox.y > obstacleBox.y) {
 			crashed = true;
 		}
@@ -664,13 +654,13 @@
 			this.gap = this.getGap(this.gapCoefficient, speed);
 		},
 		draw: function() {
-			var sourceWidth = this.typeConfig.width;
-			var sourceHeight = this.typeConfig.height;
+			let sourceWidth = this.typeConfig.width;
+			let sourceHeight = this.typeConfig.height;
 			if (IS_HIDPI) {
 				sourceWidth = sourceWidth * 2;
 				sourceHeight = sourceHeight * 2;
 			}
-			var sourceX = (sourceWidth * this.size) * (0.5 * (this.size - 1));
+			let sourceX = (sourceWidth * this.size) * (0.5 * (this.size - 1));
 			this.canvasCtx.drawImage(this.image, sourceX, 0, sourceWidth * this.size, sourceHeight, this.xPos, this.yPos, this.typeConfig.width * this.size, this.typeConfig.height);
 		},
 		update: function(deltaTime, speed) {
@@ -683,16 +673,16 @@
 			}
 		},
 		getGap: function(gapCoefficient, speed) {
-			var minGap = Math.round(this.width * speed + this.typeConfig.minGap * gapCoefficient);
-			var maxGap = Math.round(minGap * Obstacle.MAX_GAP_COEFFICIENT);
+			let minGap = Math.round(this.width * speed + this.typeConfig.minGap * gapCoefficient);
+			let maxGap = Math.round(minGap * Obstacle.MAX_GAP_COEFFICIENT);
 			return getRandomNum(minGap, maxGap);
 		},
 		isVisible: function() {
 			return this.xPos + this.width > 0;
 		},
 		cloneCollisionBoxes: function() {
-			var collisionBoxes = this.typeConfig.collisionBoxes;
-			for (var i = collisionBoxes.length - 1; i >= 0; i--) {
+			let collisionBoxes = this.typeConfig.collisionBoxes;
+			for (let i = collisionBoxes.length - 1; i >= 0; i--) {
 				this.collisionBoxes[i] = new CollisionBox(collisionBoxes[i].x, collisionBoxes[i].y, collisionBoxes[i].width, collisionBoxes[i].height);
 			}
 		}
@@ -790,7 +780,7 @@
 		},
 		setJumpVelocity: function(setting) {
 			this.config.INIITAL_JUMP_VELOCITY = -setting;
-			this.config.DROP_VELOCITY = -setting / 2;
+			this.config.DROP_VELOCITY = -setting / 8;
 		},
 		update: function(deltaTime, opt_status) {
 			this.timer += deltaTime;
@@ -818,10 +808,10 @@
 			}
 		},
 		draw: function(x, y) {
-			var sourceX = x;
-			var sourceY = y;
-			var sourceWidth = this.config.WIDTH;
-			var sourceHeight = this.config.HEIGHT;
+			let sourceX = x;
+			let sourceY = y;
+			let sourceWidth = this.config.WIDTH;
+			let sourceHeight = this.config.HEIGHT;
 			if (IS_HIDPI) {
 				sourceX *= 2;
 				sourceY *= 2;
@@ -834,7 +824,7 @@
 			this.blinkDelay = Math.ceil(Math.random() * Trex.BLINK_TIMING);
 		},
 		blink: function(time) {
-			var deltaTime = time - this.animStartTime;
+			let deltaTime = time - this.animStartTime;
 			if (deltaTime >= this.blinkDelay) {
 				this.draw(this.currentAnimFrames[this.currentFrame], 0);
 				if (this.currentFrame == 1) {
@@ -858,8 +848,8 @@
 			}
 		},
 		updateJump: function(deltaTime) {
-			var msPerFrame = Trex.animFrames[this.status].msPerFrame;
-			var framesElapsed = deltaTime / msPerFrame;
+			let msPerFrame = Trex.animFrames[this.status].msPerFrame;
+			let framesElapsed = deltaTime / msPerFrame;
 			if (this.speedDrop) {
 				this.yPos += Math.round(this.jumpVelocity * this.config.SPEED_DROP_COEFFICIENT * framesElapsed);
 			} else {
@@ -926,10 +916,10 @@
 	};
 	DistanceMeter.prototype = {
 		init: function(width) {
-			var maxDistanceStr = '';
+			let maxDistanceStr = '';
 			this.calcXPos(width);
 			this.maxScore = this.config.MAX_DISTANCE_UNITS;
-			for (var i = 0; i < this.config.MAX_DISTANCE_UNITS; i++) {
+			for (let i = 0; i < this.config.MAX_DISTANCE_UNITS; i++) {
 				this.draw(i, 0);
 				this.defaultString += '0';
 				maxDistanceStr += '9';
@@ -940,13 +930,13 @@
 			this.x = canvasWidth - (DistanceMeter.dimensions.DEST_WIDTH * (this.config.MAX_DISTANCE_UNITS + 1));
 		},
 		draw: function(digitPos, value, opt_highScore) {
-			var sourceWidth = DistanceMeter.dimensions.WIDTH;
-			var sourceHeight = DistanceMeter.dimensions.HEIGHT;
-			var sourceX = DistanceMeter.dimensions.WIDTH * value;
-			var targetX = digitPos * DistanceMeter.dimensions.DEST_WIDTH;
-			var targetY = this.y;
-			var targetWidth = DistanceMeter.dimensions.WIDTH;
-			var targetHeight = DistanceMeter.dimensions.HEIGHT;
+			let sourceWidth = DistanceMeter.dimensions.WIDTH;
+			let sourceHeight = DistanceMeter.dimensions.HEIGHT;
+			let sourceX = DistanceMeter.dimensions.WIDTH * value;
+			let targetX = digitPos * DistanceMeter.dimensions.DEST_WIDTH;
+			let targetY = this.y;
+			let targetWidth = DistanceMeter.dimensions.WIDTH;
+			let targetHeight = DistanceMeter.dimensions.HEIGHT;
 			if (IS_HIDPI) {
 				sourceWidth *= 2;
 				sourceHeight *= 2;
@@ -954,7 +944,7 @@
 			}
 			this.canvasCtx.save();
 			if (opt_highScore) {
-				var highScoreX = this.x - (this.config.MAX_DISTANCE_UNITS * 2) * DistanceMeter.dimensions.WIDTH;
+				let highScoreX = this.x - (this.config.MAX_DISTANCE_UNITS * 2) * DistanceMeter.dimensions.WIDTH;
 				this.canvasCtx.translate(highScoreX, this.y);
 			} else {
 				this.canvasCtx.translate(this.x, this.y);
@@ -966,8 +956,8 @@
 			return distance ? Math.round(distance * this.config.COEFFICIENT) : 0;
 		},
 		update: function(deltaTime, distance) {
-			var paint = true;
-			var playSound = false;
+			let paint = true;
+			let playSound = false;
 			if (!this.acheivement) {
 				distance = this.getActualDistance(distance);
 				if (distance > 0) {
@@ -976,7 +966,7 @@
 						this.flashTimer = 0;
 						playSound = true;
 					}
-					var distanceStr = (this.defaultString + distance).substr(-this.config.MAX_DISTANCE_UNITS);
+					let distanceStr = (this.defaultString + distance).substr(-this.config.MAX_DISTANCE_UNITS);
 					this.digits = distanceStr.split('');
 				} else {
 					this.digits = this.defaultString.split('');
@@ -997,7 +987,7 @@
 				}
 			}
 			if (paint) {
-				for (var i = this.digits.length - 1; i >= 0; i--) {
+				for (let i = this.digits.length - 1; i >= 0; i--) {
 					this.draw(i, parseInt(this.digits[i]));
 				}
 			}
@@ -1007,14 +997,14 @@
 		drawHighScore: function() {
 			this.canvasCtx.save();
 			this.canvasCtx.globalAlpha = .8;
-			for (var i = this.highScore.length - 1; i >= 0; i--) {
+			for (let i = this.highScore.length - 1; i >= 0; i--) {
 				this.draw(i, parseInt(this.highScore[i], 10), true);
 			}
 			this.canvasCtx.restore();
 		},
 		setHighScore: function(distance) {
 			distance = this.getActualDistance(distance);
-			var highScoreStr = (this.defaultString + distance).substr(-this.config.MAX_DISTANCE_UNITS);
+			let highScoreStr = (this.defaultString + distance).substr(-this.config.MAX_DISTANCE_UNITS);
 			this.highScore = ['10', '11', ''].concat(highScoreStr.split(''));
 		},
 		reset: function() {
@@ -1049,8 +1039,8 @@
 		},
 		draw: function() {
 			this.canvasCtx.save();
-			var sourceWidth = Cloud.config.WIDTH;
-			var sourceHeight = Cloud.config.HEIGHT;
+			let sourceWidth = Cloud.config.WIDTH;
+			let sourceHeight = Cloud.config.HEIGHT;
 			if (IS_HIDPI) {
 				sourceWidth = sourceWidth * 2;
 				sourceHeight = sourceHeight * 2;
@@ -1092,7 +1082,7 @@
 	};
 	HorizonLine.prototype = {
 		setSourceDimensions: function() {
-			for (var dimension in HorizonLine.dimensions) {
+			for (let dimension in HorizonLine.dimensions) {
 				if (IS_HIDPI) {
 					if (dimension != 'YPOS') {
 						this.sourceDimensions[dimension] = HorizonLine.dimensions[dimension] * 2;
@@ -1113,8 +1103,8 @@
 			this.canvasCtx.drawImage(this.image, this.sourceXPos[1], 0, this.sourceDimensions.WIDTH, this.sourceDimensions.HEIGHT, this.xPos[1], this.yPos, this.dimensions.WIDTH, this.dimensions.HEIGHT);
 		},
 		updateXPos: function(pos, increment) {
-			var line1 = pos;
-			var line2 = pos == 0 ? 1 : 0;
+			let line1 = pos;
+			let line2 = pos == 0 ? 1 : 0;
 			this.xPos[line1] -= increment;
 			this.xPos[line2] = this.xPos[line1] + this.dimensions.WIDTH;
 			if (this.xPos[line1] <= -this.dimensions.WIDTH) {
@@ -1124,7 +1114,7 @@
 			}
 		},
 		update: function(deltaTime, speed) {
-			var increment = Math.floor(speed * (FPS / 1000) * deltaTime);
+			let increment = Math.floor(speed * (FPS / 1000) * deltaTime);
 			if (this.xPos[0] <= 0) {
 				this.updateXPos(0, increment);
 			} else {
@@ -1179,13 +1169,13 @@
 			}
 		},
 		updateClouds: function(deltaTime, speed) {
-			var cloudSpeed = this.cloudSpeed / 1000 * deltaTime * speed;
-			var numClouds = this.clouds.length;
+			let cloudSpeed = this.cloudSpeed / 1000 * deltaTime * speed;
+			let numClouds = this.clouds.length;
 			if (numClouds) {
-				for (var i = numClouds - 1; i >= 0; i--) {
+				for (let i = numClouds - 1; i >= 0; i--) {
 					this.clouds[i].update(cloudSpeed);
 				}
-				var lastCloud = this.clouds[numClouds - 1];
+				let lastCloud = this.clouds[numClouds - 1];
 				if (numClouds < this.config.MAX_CLOUDS && (this.dimensions.WIDTH - lastCloud.xPos) > lastCloud.cloudGap && this.cloudFrequency > Math.random()) {
 					this.addCloud();
 				}
@@ -1195,9 +1185,9 @@
 			}
 		},
 		updateObstacles: function(deltaTime, currentSpeed) {
-			var updatedObstacles = this.obstacles.slice(0);
-			for (var i = 0; i < this.obstacles.length; i++) {
-				var obstacle = this.obstacles[i];
+			let updatedObstacles = this.obstacles.slice(0);
+			for (let i = 0; i < this.obstacles.length; i++) {
+				let obstacle = this.obstacles[i];
 				obstacle.update(deltaTime, currentSpeed);
 				if (obstacle.remove) {
 					updatedObstacles.shift();
@@ -1205,7 +1195,7 @@
 			}
 			this.obstacles = updatedObstacles;
 			if (this.obstacles.length > 0) {
-				var lastObstacle = this.obstacles[this.obstacles.length - 1];
+				let lastObstacle = this.obstacles[this.obstacles.length - 1];
 				if (lastObstacle && !lastObstacle.followingObstacleCreated && lastObstacle.isVisible() && (lastObstacle.xPos + lastObstacle.width + lastObstacle.gap) < this.dimensions.WIDTH) {
 					this.addNewObstacle(currentSpeed);
 					lastObstacle.followingObstacleCreated = true;
@@ -1215,9 +1205,9 @@
 			}
 		},
 		addNewObstacle: function(currentSpeed) {
-			var obstacleTypeIndex = getRandomNum(0, Obstacle.types.length - 1);
-			var obstacleType = Obstacle.types[obstacleTypeIndex];
-			var obstacleImg = this.obstacleImgs[obstacleType.type];
+			let obstacleTypeIndex = getRandomNum(0, Obstacle.types.length - 1);
+			let obstacleType = Obstacle.types[obstacleTypeIndex];
+			let obstacleImg = this.obstacleImgs[obstacleType.type];
 			this.obstacles.push(new Obstacle(this.canvasCtx, obstacleType, obstacleImg, this.dimensions, this.gapCoefficient, currentSpeed));
 		},
 		reset: function() {
